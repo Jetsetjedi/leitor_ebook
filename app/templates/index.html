@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <title>Leitor Ebook</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+  <header class="app-header">
+    <h1>📚 Leitor Ebook</h1>
+  </header>
+
+  <main class="container">
+    <!-- Upload -->
+    <section class="upload-section card">
+      <h2>Adicionar Livro</h2>
+      <form id="upload-form" enctype="multipart/form-data">
+        <label class="file-drop" id="drop-zone">
+          <span id="drop-label">Arraste um arquivo ou clique aqui</span>
+          <input type="file" id="file-input" name="file"
+                 accept=".pdf,.epub,.mobi,.txt" hidden>
+        </label>
+        <p class="hint">Formatos: PDF · EPUB · MOBI · TXT (máx. 50 MB)</p>
+        <div id="upload-status" class="status-msg" hidden></div>
+      </form>
+    </section>
+
+    <!-- Biblioteca -->
+    <section class="library-section">
+      <h2>Minha Biblioteca</h2>
+      {% if books %}
+      <div class="book-grid">
+        {% for book in books %}
+        <article class="book-card" data-id="{{ book.id }}">
+          <div class="book-icon fmt-{{ book.format }}">{{ book.format.upper() }}</div>
+          <div class="book-info">
+            <h3 class="book-title" title="{{ book.title }}">{{ book.title }}</h3>
+            {% if book.author %}
+            <p class="book-author">{{ book.author }}</p>
+            {% endif %}
+            <p class="book-meta">{{ (book.file_size / 1024)|int }} KB &middot; {{ book.format.upper() }}</p>
+          </div>
+          <div class="book-actions">
+            <a href="{{ url_for('reader.read', book_id=book.id) }}" class="btn btn-primary">Ler</a>
+            <button class="btn btn-danger btn-delete" data-id="{{ book.id }}">&#128465;</button>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty-state">Nenhum livro ainda. Faça upload acima para começar!</p>
+      {% endif %}
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

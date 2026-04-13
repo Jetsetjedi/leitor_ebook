@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ book.title }} — Leitor Ebook</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reader.css') }}">
+</head>
+<body class="reader-body">
+
+  <!-- Barra superior -->
+  <header class="reader-header">
+    <a href="{{ url_for('main.index') }}" class="btn btn-ghost">&#8592; Biblioteca</a>
+    <span class="reader-title">{{ book.title }}</span>
+    <div class="reader-header-actions">
+      <button id="btn-search" class="btn btn-ghost" title="Buscar">&#128269;</button>
+      <button id="btn-bookmark" class="btn btn-ghost" title="Adicionar marcador">🔖</button>
+      <button id="btn-note" class="btn btn-ghost" title="Nova anotação">📝</button>
+      <button id="btn-toc" class="btn btn-ghost" title="Índice">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- Painel lateral -->
+  <aside id="sidebar" class="sidebar hidden">
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" data-tab="toc">Índice</button>
+      <button class="tab-btn" data-tab="bookmarks">Marcadores</button>
+      <button class="tab-btn" data-tab="notes">Anotações</button>
+    </div>
+    <div id="tab-toc" class="tab-content active"></div>
+    <div id="tab-bookmarks" class="tab-content hidden"></div>
+    <div id="tab-notes" class="tab-content hidden"></div>
+  </aside>
+
+  <!-- Barra de busca -->
+  <div id="search-bar" class="search-bar hidden">
+    <input type="search" id="search-input" placeholder="Buscar no livro..." maxlength="200">
+    <button id="btn-search-go" class="btn btn-primary">Buscar</button>
+    <button id="btn-search-close" class="btn btn-ghost">&#10005;</button>
+    <div id="search-results"></div>
+  </div>
+
+  <!-- Área de leitura -->
+  <div class="reader-layout">
+    <div class="reader-wrapper">
+      <!-- Controles de zoom -->
+      <div class="zoom-controls">
+        <button id="btn-zoom-out" class="btn btn-ghost" title="Diminuir fonte">A-</button>
+        <span id="zoom-label">100%</span>
+        <button id="btn-zoom-in" class="btn btn-ghost" title="Aumentar fonte">A+</button>
+      </div>
+
+      <!-- Conteúdo do livro -->
+      <article id="book-content" class="book-content" data-fontsize="100">
+        <div class="loading-spinner">Carregando...</div>
+      </article>
+
+      <!-- Paginação -->
+      <nav class="pagination">
+        <button id="btn-prev" class="btn btn-secondary" disabled>&#8592; Anterior</button>
+        <span id="page-info">— / —</span>
+        <button id="btn-next" class="btn btn-secondary">Próximo &#8594;</button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Modal: nova anotação -->
+  <div id="modal-note" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <h3>Nova Anotação</h3>
+      <textarea id="note-text" maxlength="2000" rows="6"
+                placeholder="Escreva sua anotação aqui..."></textarea>
+      <div class="modal-actions">
+        <button id="btn-note-save" class="btn btn-primary">Salvar</button>
+        <button id="btn-note-cancel" class="btn btn-ghost">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Passa dados do servidor para o JS de forma segura (sem eval)
+    const BOOK_ID = {{ book.id | tojson }};
+    const BOOK_FORMAT = {{ book.format | tojson }};
+    const START_POSITION = {{ start_position | tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='js/reader.js') }}"></script>
+</body>
+</html>
